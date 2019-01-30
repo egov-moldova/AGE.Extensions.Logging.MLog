@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7.1</LangVersion>
+    <PackageId>AGE.Extensions.Logging.MLog</PackageId>
+    <Authors>AGE</Authors>
+    <Product>AGE.Extensions.Logging.MLog</Product>
+    <AssemblyName>AGE.Extensions.Logging.MLog</AssemblyName>
+    <RootNamespace>AGE.Extensions.Logging.MLog</RootNamespace>
+    <Description>This is a .NET logging provider for structured logging in MLog</Description>
+    <PackageTags>.net; standard; MLog; logging;</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/egc-moldova/AGE.Extensions.Logging.MLog</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/egc-moldova/AGE.Extensions.Logging.MLog</RepositoryUrl>
+    <Version>1.0.1</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
+    <PackageReference Include="MLog.Client.Core" Version="1.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+  </ItemGroup>
+
+</Project>
