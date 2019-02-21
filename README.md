@@ -23,11 +23,12 @@ Add the following configuration section to your **appsettings.json**:
 ```
 {
 	...
-	 "MLogConfig": {
+	 "MLogConfig": 
+	 {
       "Url": "urlToMLogService",
       "CertificatePath": "pathToPrivateCertificate",
       "CertificatePassword": "certPassword"
-    }
+	 }
 	...
 }
 ```

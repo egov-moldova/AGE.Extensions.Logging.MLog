@@ -15,19 +15,14 @@ namespace AGE.Extensions.Logging.MLog
             {
                 throw new ArgumentNullException(nameof(configure));
             }
-            builder.AddMLog();
-            builder.Services.Configure(configure);
-            return builder;
-        }
 
-        public static ILoggingBuilder AddMLog(this ILoggingBuilder builder)
-        {
             builder.AddConfiguration();
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<MLogLoggerOptions>, MLogLoggerOptionsPostConfigure>());
             builder.Services.AddSingleton<ILoggerProvider, MLogLoggerProvider>();
+            builder.Services.Configure(configure);
 
             return builder;
         }
-
     }
 }
+ 

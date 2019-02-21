@@ -1,4 +1,5 @@
-﻿using MLog.Client.Core;
+﻿using Microsoft.Extensions.Logging;
+using MLog.Client.Core;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
@@ -7,10 +8,12 @@ namespace AGE.Extensions.Logging.MLog
 {
     public class MLogMessageProcessor : IDisposable
     {
-        private readonly MLogClient _mlogClient;
+        private const int _maxQueuedMessages = 1024;
+
+        private static MLogClient _mlogClient;
         private readonly BlockingCollection<string> _messageQueue;
         private readonly Thread _processorThread;
-        private readonly int _maxQueuedMessages = 1024;
+
         public MLogMessageProcessor(MLogClient mlogClient)
         {
             _mlogClient = mlogClient;
@@ -25,48 +28,30 @@ namespace AGE.Extensions.Logging.MLog
 
         public virtual void EnqueueMessage(string message)
         {
-            if (!_messageQueue.IsAddingCompleted)
+            if (!_messageQueue.TryAdd(message))
             {
-                try
-                {
-                    _messageQueue.Add(message);
-                    return;
-                }
-                catch (InvalidOperationException) { }
+                _mlogClient.RegisterEvent(message);
             }
-
-            _mlogClient.RegisterEvent(message);
-
         }
 
         private void StartAsync()
         {
-            try
-            {
-                foreach (var message in _messageQueue.GetConsumingEnumerable())
-                {
-                    _mlogClient.RegisterEvent(message);
-                }
-            }
-            catch
+            foreach (var message in _messageQueue.GetConsumingEnumerable())
             {
                 try
                 {
-                    _messageQueue.CompleteAdding();
+                    _mlogClient.RegisterEvent(message);
                 }
-                catch { }
-            }
+                catch (Exception ex)
+                {
+                }
+            }           
         }
 
         public void Dispose()
         {
             _messageQueue.CompleteAdding();
-
-            try
-            {
-                _processorThread.Join(1500);
-            }
-            catch (ThreadStateException) { }
+            _processorThread.Join(30000);
         }
     }
 }

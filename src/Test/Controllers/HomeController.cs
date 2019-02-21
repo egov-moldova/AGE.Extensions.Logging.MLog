@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace Test.Controllers
@@ -14,12 +15,12 @@ namespace Test.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            using (logger.BeginScope("{event_type}{service}", "Signature.Success", "testService"))
+            using (logger.BeginScope("{EventType}{Service}{EventTime}", "Signature.Success", "testService",DateTime.UtcNow))
             {
-                logger.LogError("Logging with scope => {test}", "scope");
+                logger.LogError("Logging with scope => {Test}", "scope");
             }
 
-            logger.LogError("Took place an error with event type: {event_type} with data: {test}", "ERROR", "test");
+            logger.LogError("Took place an error with event type: {EventType} with data: {test}", "ERROR", "test");
             return View();
         }
     }

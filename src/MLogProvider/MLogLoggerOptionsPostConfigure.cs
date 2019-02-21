@@ -8,7 +8,7 @@ namespace AGE.Extensions.Logging.MLog
         public void PostConfigure(string name, MLogLoggerOptions options)
         {
             if (options.Certificate != null) return;
-            options.Certificate = new X509Certificate2(options.CertificatePath, options.CertificatePassword);
+            options.Certificate = new X509Certificate2(options.CertificatePath, options.CertificatePassword, X509KeyStorageFlags.MachineKeySet);
         }
     }
 }

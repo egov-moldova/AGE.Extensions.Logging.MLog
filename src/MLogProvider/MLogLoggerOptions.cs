@@ -13,6 +13,8 @@ namespace AGE.Extensions.Logging.MLog
 
         public string CertificatePassword { get; set; }
 
+        public Dictionary<string, string> ScopeMappings { get; set; }
+
         public X509Certificate2 Certificate { get; set; }
 
         public bool IncludeScopes { get; set; } = true;

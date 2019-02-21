@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using AGE.Extensions.Logging.MLog;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Diagnostics;
 
 namespace Test
 {
@@ -28,7 +30,6 @@ namespace Test
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddLogging(builder => builder
                 .AddConfiguration(Configuration)
@@ -39,9 +40,8 @@ namespace Test
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, DiagnosticSource diagnosticSource)
         {
-            //loggerFactory.AddFile("Logs/myapp-{Date}.txt");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
