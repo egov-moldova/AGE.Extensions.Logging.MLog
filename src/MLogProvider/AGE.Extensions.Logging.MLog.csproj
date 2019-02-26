@@ -13,7 +13,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/egc-moldova/AGE.Extensions.Logging.MLog</PackageProjectUrl>
     <RepositoryUrl>https://github.com/egc-moldova/AGE.Extensions.Logging.MLog</RepositoryUrl>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>

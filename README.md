@@ -23,12 +23,12 @@ Add the following configuration section to your **appsettings.json**:
 ```
 {
 	...
-	 "MLogConfig": 
-	 {
-      "Url": "urlToMLogService",
-      "CertificatePath": "pathToPrivateCertificate",
-      "CertificatePassword": "certPassword"
-	 }
+	"MLogConfig": 
+	{
+     "Url": "urlToMLogService",
+     "CertificatePath": "pathToPrivateCertificate",
+     "CertificatePassword": "certPassword"
+	}
 	...
 }
 ```
@@ -37,12 +37,11 @@ Add the following configuration section to your **appsettings.json**:
 
 Add the following code snippet to your **Startup.ConfigureServices** method:
 ```
- services.AddLogging(builder => builder
-		 .AddConfiguration(Configuration)
-		 .AddMLog(options =>
-		 {
-			Configuration.Bind("Logging:MLogConfig", options);
-		 }));
+	services.AddOptions();
+	services.Configure<MLogLoggerOptions>(Configuration.GetSection("Logging:MLogConfig"));
+	services.AddLogging(builder => builder
+		   .AddConfiguration(Configuration)
+		   .AddMLog());
 ```
 
 ```
