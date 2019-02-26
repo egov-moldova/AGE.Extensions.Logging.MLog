@@ -6,8 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using AGE.Extensions.Logging.MLog;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Diagnostics;
+
 
 namespace Test
 {
@@ -29,14 +29,14 @@ namespace Test
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
+            services.AddOptions();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.Configure<MLogLoggerOptions>(Configuration.GetSection("Logging:MLogConfig"));
             services.AddLogging(builder => builder
-                .AddConfiguration(Configuration)
-                .AddMLog(options =>
-                {
-                    Configuration.Bind("Logging:MLogConfig", options);
-                }));
+                   .AddConfiguration(Configuration)
+                   .AddMLog());
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

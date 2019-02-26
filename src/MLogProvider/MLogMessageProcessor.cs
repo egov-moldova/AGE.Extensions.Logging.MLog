@@ -13,10 +13,11 @@ namespace AGE.Extensions.Logging.MLog
         private static MLogClient _mlogClient;
         private readonly BlockingCollection<string> _messageQueue;
         private readonly Thread _processorThread;
-
-        public MLogMessageProcessor(MLogClient mlogClient)
+        private ILogger _logger;
+        public MLogMessageProcessor(MLogClient mlogClient, ILogger logger)
         {
             _mlogClient = mlogClient;
+            _logger = logger;
             _messageQueue = new BlockingCollection<string>(_maxQueuedMessages);
             _processorThread = new Thread(StartAsync)
             {
@@ -34,16 +35,17 @@ namespace AGE.Extensions.Logging.MLog
             }
         }
 
-        private void StartAsync()
+        private async void StartAsync()
         {
             foreach (var message in _messageQueue.GetConsumingEnumerable())
             {
                 try
                 {
-                    _mlogClient.RegisterEvent(message);
+                    await _mlogClient.RegisterEventAsync(message);
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError("Error on sending logs to MLog with message: {error_message} ", ex.Message);
                 }
             }           
         }
