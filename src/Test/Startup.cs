@@ -13,9 +13,12 @@ namespace Test
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly ILogger mlogErrorLogger;
+
+        public Startup(IConfiguration configuration, ILogger<MLogMessageProcessor> mlogErrorLogger)
         {
             Configuration = configuration;
+            this.mlogErrorLogger = mlogErrorLogger;
         }
 
         public IConfiguration Configuration { get; }
@@ -32,10 +35,13 @@ namespace Test
             services.AddOptions();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.Configure<MLogLoggerOptions>(Configuration.GetSection("Logging:MLogConfig"));
             services.AddLogging(builder => builder
                    .AddConfiguration(Configuration)
-                   .AddMLog());
+                   .AddMLog(options =>
+                   {
+                       Configuration.Bind("Logging:MLogConfig", options);
+                       options.ErrorLogger = mlogErrorLogger;
+                   }));
 
         }
 

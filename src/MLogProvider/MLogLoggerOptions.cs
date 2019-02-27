@@ -21,6 +21,8 @@ namespace AGE.Extensions.Logging.MLog
 
         public Func<string, LogLevel, bool> Filter { get; set; }
 
+        public ILogger ErrorLogger { get; set; }
+
         public Dictionary<string, object> AdditionalFields { get; set; } = new Dictionary<string, object>();
 
     }

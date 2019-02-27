@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using MLog.Client.Core;
 using System;
 using System.Collections.Concurrent;
-using System.Security.Cryptography.X509Certificates;
 
 namespace AGE.Extensions.Logging.MLog
 {
@@ -15,27 +14,16 @@ namespace AGE.Extensions.Logging.MLog
         private readonly MLogMessageProcessor _messageProcessor;
         private IExternalScopeProvider externalScopeProvider;
         private readonly ConcurrentDictionary<string, MLogLogger> _loggers = new ConcurrentDictionary<string, MLogLogger>();
-        public MLogLoggerProvider(IOptions<MLogLoggerOptions> options , ILogger logger)
+        public MLogLoggerProvider(IOptions<MLogLoggerOptions> options)
         {
-            _options = options.Value;
-
-            if (_options == null)
+            _options = options.Value;          
+            if (string.IsNullOrEmpty(_options.Url?.AbsoluteUri) || _options.Certificate == null )
             {
-                throw new ArgumentException("MLog options are not instantiated.", nameof(_options));
-            }
-            
-            if (string.IsNullOrEmpty(_options.Url?.AbsoluteUri) )
-            {
-                throw new ArgumentException("MLog Url are missing.", nameof(options));
-            }
-
-            if (_options.Certificate == null)
-            {
-                _options.Certificate = new X509Certificate2(_options.CertificatePath, _options.CertificatePassword, X509KeyStorageFlags.MachineKeySet);
+                throw new ArgumentException("MLog Url or Certificate are missing.", nameof(options));
             }
 
             _mlogClient = new MLogClient(_options.Url, _options.Certificate, false);
-            _messageProcessor = new MLogMessageProcessor(_mlogClient, logger);
+            _messageProcessor = new MLogMessageProcessor(_mlogClient, _options.ErrorLogger);
         }
 
         public ILogger CreateLogger(string name)

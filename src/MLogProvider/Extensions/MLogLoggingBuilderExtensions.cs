@@ -1,27 +1,24 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Configuration;
 using Microsoft.Extensions.Options;
+using System;
 
 namespace AGE.Extensions.Logging.MLog
 {
     public static class MLogLoggingBuilderExtensions
     {  
-        public static ILoggingBuilder AddMLog(this ILoggingBuilder builder, ILogger logger = null)
+        public static ILoggingBuilder AddMLog(this ILoggingBuilder builder, Action<MLogLoggerOptions> configure)
         {
-            var serviceProvider = builder.Services.BuildServiceProvider();
-            var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
-            builder.AddConfiguration();
-            builder.Services
-                .AddSingleton(loggerFactory)
-                .BuildServiceProvider();
-
-            if (logger == null)
+            if (configure == null)
             {
-                logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<MLogMessageProcessor>();
+                throw new ArgumentNullException(nameof(configure));
             }
-            loggerFactory.AddProvider(new MLogLoggerProvider(serviceProvider.GetService<IOptions<MLogLoggerOptions>>(), logger));
+            builder.Services.Configure(configure);
+            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<MLogLoggerOptions>, MLogLoggerOptionsPostConfigure>());
+            builder.Services.AddSingleton<ILoggerProvider, MLogLoggerProvider>();
             return builder;
+
         }
     }
 }
