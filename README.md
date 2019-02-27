@@ -37,11 +37,13 @@ Add the following configuration section to your **appsettings.json**:
 
 Add the following code snippet to your **Startup.ConfigureServices** method:
 ```
-	services.AddOptions();
-	services.Configure<MLogLoggerOptions>(Configuration.GetSection("Logging:MLogConfig"));
 	services.AddLogging(builder => builder
-		   .AddConfiguration(Configuration)
-		   .AddMLog());
+			   .AddConfiguration(Configuration)
+			   .AddMLog(options =>
+			   {
+				   Configuration.Bind("Logging:MLogConfig", options);
+				   options.ErrorLogger = mlogErrorLogger;
+			   }))
 ```
 
 ```
